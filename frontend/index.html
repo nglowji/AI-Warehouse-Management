@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Warehouse Ops Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap">
+          <div class="brand-mark">W</div>
+          <div>
+            <p class="eyebrow">SYSTEM</p>
+            <h1>Warehouse Ops</h1>
+          </div>
+        </div>
+
+        <nav class="main-nav">
+          <button class="nav-item active">Overview</button>
+          <button class="nav-item">Inventory</button>
+          <button class="nav-item">Goods Receipt</button>
+          <button class="nav-item">Goods Issue</button>
+          <button class="nav-item">Stocktake</button>
+          <button class="nav-item">Audit</button>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Operations</p>
+            <h2>Warehouse performance</h2>
+          </div>
+          <button id="refreshBtn" class="primary-btn">Refresh</button>
+        </header>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <p>Total products</p>
+            <h3 id="totalProducts">0</h3>
+          </article>
+          <article class="stat-card">
+            <p>Total warehouses</p>
+            <h3 id="totalWarehouses">0</h3>
+          </article>
+          <article class="stat-card warning">
+            <p>Low stock items</p>
+            <h3 id="lowStockProducts">0</h3>
+          </article>
+          <article class="stat-card accent">
+            <p>Pending stocktakes</p>
+            <h3 id="pendingStocktakes">0</h3>
+          </article>
+        </section>
+
+        <section class="summary-row">
+          <article class="panel">
+            <div class="panel-header">
+              <h3>Inventory status</h3>
+            </div>
+            <div class="metric-row">
+              <div>
+                <span>Total available qty</span>
+                <strong id="totalInventoryQuantity">0</strong>
+              </div>
+              <div>
+                <span>Incoming this month</span>
+                <strong id="incomingThisMonth">0</strong>
+              </div>
+            </div>
+            <div class="metric-row">
+              <div>
+                <span>Outgoing this month</span>
+                <strong id="outgoingThisMonth">0</strong>
+              </div>
+              <div>
+                <span>Net movement</span>
+                <strong id="netMovementThisMonth">0</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <h3>Quick actions</h3>
+            </div>
+            <ul class="action-list">
+              <li>Receive goods</li>
+              <li>Issue stock</li>
+              <li>Run stocktake</li>
+              <li>Review audit log</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="panel table-panel">
+          <div class="panel-header">
+            <h3>Low stock watchlist</h3>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Warehouse</th>
+                  <th>Location</th>
+                  <th>Available</th>
+                  <th>Min</th>
+                  <th>Shortfall</th>
+                </tr>
+              </thead>
+              <tbody id="lowStockTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
