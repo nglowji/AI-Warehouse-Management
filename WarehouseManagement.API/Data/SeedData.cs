@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.EntityFrameworkCore;
 using WarehouseManagement.API.Entities;
 
@@ -7,7 +8,22 @@ public static class SeedData
 {
     public static async Task InitializeAsync(WarehouseDbContext context)
     {
-        await context.Database.MigrateAsync();
+        var connection = context.Database.GetDbConnection();
+
+        if (connection.State != ConnectionState.Open)
+        {
+            await connection.OpenAsync();
+        }
+
+        using var command = connection.CreateCommand();
+        command.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name <> '__EFMigrationsHistory';";
+
+        var tableCount = Convert.ToInt32(await command.ExecuteScalarAsync() ?? 0);
+
+        if (tableCount == 0)
+        {
+            await context.Database.EnsureCreatedAsync();
+        }
 
         if (!await context.Roles.AnyAsync())
         {
@@ -16,6 +32,7 @@ public static class SeedData
                 new Role { Id = Guid.NewGuid(), Name = "Manager", Description = "Warehouse manager" },
                 new Role { Id = Guid.NewGuid(), Name = "Staff", Description = "Warehouse staff" }
             );
+            await context.SaveChangesAsync();
         }
 
         if (!await context.Users.AnyAsync())

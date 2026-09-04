@@ -47,7 +47,7 @@ function renderLowStockItems(items) {
   if (!items || items.length === 0) {
     lowStockTableBody.innerHTML = `
       <tr>
-        <td colspan="6">No low stock issues detected.</td>
+        <td colspan="6">Chưa có mặt hàng nào sắp hết.</td>
       </tr>
     `;
     return;
@@ -77,7 +77,7 @@ async function loadDashboard() {
   } catch (error) {
     lowStockTableBody.innerHTML = `
       <tr>
-        <td colspan="6">Unable to load dashboard data. Please ensure the backend is running on ${API_BASE}.</td>
+        <td colspan="6">Không thể tải dữ liệu màn hình. Hãy đảm bảo backend đang chạy trên ${API_BASE}.</td>
       </tr>
     `;
     console.error(error);

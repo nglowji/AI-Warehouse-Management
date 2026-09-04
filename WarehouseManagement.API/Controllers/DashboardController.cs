@@ -6,7 +6,6 @@ namespace WarehouseManagement.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class DashboardController : ControllerBase
 {
     private readonly IDashboardService _dashboardService;
@@ -16,6 +15,7 @@ public class DashboardController : ControllerBase
         _dashboardService = dashboardService;
     }
 
+    [AllowAnonymous]
     [HttpGet("summary")]
     public async Task<IActionResult> GetSummary()
     {
@@ -23,6 +23,7 @@ public class DashboardController : ControllerBase
         return Ok(summary);
     }
 
+    [AllowAnonymous]
     [HttpGet("low-stock")]
     public async Task<IActionResult> GetLowStockProducts()
     {

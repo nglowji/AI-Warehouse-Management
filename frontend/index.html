@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Warehouse Ops Dashboard</title>
+    <title>Bảng điều khiển kho hàng</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -12,45 +12,45 @@
         <div class="brand-wrap">
           <div class="brand-mark">W</div>
           <div>
-            <p class="eyebrow">SYSTEM</p>
-            <h1>Warehouse Ops</h1>
+            <p class="eyebrow">HỆ THỐNG</p>
+            <h1>Kho vận hành</h1>
           </div>
         </div>
 
         <nav class="main-nav">
-          <button class="nav-item active">Overview</button>
-          <button class="nav-item">Inventory</button>
-          <button class="nav-item">Goods Receipt</button>
-          <button class="nav-item">Goods Issue</button>
-          <button class="nav-item">Stocktake</button>
-          <button class="nav-item">Audit</button>
+          <button class="nav-item active">Tổng quan</button>
+          <button class="nav-item">Tồn kho</button>
+          <button class="nav-item">Nhập kho</button>
+          <button class="nav-item">Xuất kho</button>
+          <button class="nav-item">Kiểm kê</button>
+          <button class="nav-item">Nhật ký</button>
         </nav>
       </aside>
 
       <main class="content">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Operations</p>
-            <h2>Warehouse performance</h2>
+            <p class="eyebrow">Hoạt động</p>
+            <h2>Hiệu suất kho</h2>
           </div>
-          <button id="refreshBtn" class="primary-btn">Refresh</button>
+          <button id="refreshBtn" class="primary-btn">Làm mới</button>
         </header>
 
         <section class="stats-grid">
           <article class="stat-card">
-            <p>Total products</p>
+            <p>Tổng sản phẩm</p>
             <h3 id="totalProducts">0</h3>
           </article>
           <article class="stat-card">
-            <p>Total warehouses</p>
+            <p>Tổng kho</p>
             <h3 id="totalWarehouses">0</h3>
           </article>
           <article class="stat-card warning">
-            <p>Low stock items</p>
+            <p>Sản phẩm sắp hết</p>
             <h3 id="lowStockProducts">0</h3>
           </article>
           <article class="stat-card accent">
-            <p>Pending stocktakes</p>
+            <p>Kiểm kê chờ</p>
             <h3 id="pendingStocktakes">0</h3>
           </article>
         </section>
@@ -58,25 +58,25 @@
         <section class="summary-row">
           <article class="panel">
             <div class="panel-header">
-              <h3>Inventory status</h3>
+              <h3>Tình trạng tồn kho</h3>
             </div>
             <div class="metric-row">
               <div>
-                <span>Total available qty</span>
+                <span>Tổng lượng khả dụng</span>
                 <strong id="totalInventoryQuantity">0</strong>
               </div>
               <div>
-                <span>Incoming this month</span>
+                <span>Nhập trong tháng</span>
                 <strong id="incomingThisMonth">0</strong>
               </div>
             </div>
             <div class="metric-row">
               <div>
-                <span>Outgoing this month</span>
+                <span>Xuất trong tháng</span>
                 <strong id="outgoingThisMonth">0</strong>
               </div>
               <div>
-                <span>Net movement</span>
+                <span>Di chuyển ròng</span>
                 <strong id="netMovementThisMonth">0</strong>
               </div>
             </div>
@@ -84,31 +84,31 @@
 
           <article class="panel">
             <div class="panel-header">
-              <h3>Quick actions</h3>
+              <h3>Thao tác nhanh</h3>
             </div>
             <ul class="action-list">
-              <li>Receive goods</li>
-              <li>Issue stock</li>
-              <li>Run stocktake</li>
-              <li>Review audit log</li>
+              <li>Nhận hàng</li>
+              <li>Xuất kho</li>
+              <li>Thực hiện kiểm kê</li>
+              <li>Xem nhật ký hoạt động</li>
             </ul>
           </article>
         </section>
 
         <section class="panel table-panel">
           <div class="panel-header">
-            <h3>Low stock watchlist</h3>
+            <h3>Danh sách sắp hết hàng</h3>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Product</th>
-                  <th>Warehouse</th>
-                  <th>Location</th>
-                  <th>Available</th>
-                  <th>Min</th>
-                  <th>Shortfall</th>
+                  <th>Sản phẩm</th>
+                  <th>Kho</th>
+                  <th>Vị trí</th>
+                  <th>Khả dụng</th>
+                  <th>Tối thiểu</th>
+                  <th>Thiếu hụt</th>
                 </tr>
               </thead>
               <tbody id="lowStockTableBody"></tbody>
@@ -117,6 +117,10 @@
         </section>
       </main>
     </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
 
     <script src="app.js"></script>
   </body>

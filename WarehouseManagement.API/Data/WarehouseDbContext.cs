@@ -90,8 +90,5 @@ public class WarehouseDbContext : DbContext
             .WithMany(r => r.Users)
             .UsingEntity(j => j.ToTable("UserRoles"));
 
-        modelBuilder.Entity<Inventory>()
-            .Property(i => i.AvailableQuantity)
-            .HasComputedColumnSql("[Quantity] - [ReservedQuantity]");
     }
 }

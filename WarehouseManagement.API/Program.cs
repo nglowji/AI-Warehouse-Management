@@ -30,6 +30,7 @@ builder.Services.AddScoped<IGoodsIssueService, GoodsIssueService>();
 builder.Services.AddScoped<IStocktakeService, StocktakeService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IWarehouseAssistantService, WarehouseAssistantService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 

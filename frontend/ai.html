@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trợ lý kho AI</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        margin: 0;
+        background: #f5f7fb;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1f2937;
+      }
+
+      .ai-shell {
+        max-width: 900px;
+        margin: 40px auto;
+        background: white;
+        border: 1px solid #dfe6f5;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+        padding: 24px;
+      }
+
+      .ai-header {
+        margin-bottom: 18px;
+      }
+
+      .ai-header h1 {
+        margin: 0 0 8px;
+        font-size: 2rem;
+      }
+
+      .chat-box {
+        min-height: 220px;
+        border: 1px solid #dfe6f5;
+        border-radius: 12px;
+        background: #f9fbff;
+        padding: 18px;
+        margin-bottom: 18px;
+        white-space: pre-line;
+      }
+
+      .prompt-row {
+        display: flex;
+        gap: 12px;
+      }
+
+      input {
+        flex: 1;
+        padding: 12px 14px;
+        border: 1px solid #dfe6f5;
+        border-radius: 10px;
+        font-size: 1rem;
+      }
+
+      button {
+        padding: 12px 18px;
+        border: none;
+        border-radius: 10px;
+        background: #1d4ed8;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ai-shell">
+      <div class="ai-header">
+        <p class="eyebrow">AI ASSISTANT</p>
+        <h1>Trợ lý kho thông minh</h1>
+      </div>
+
+      <div id="chatBox" class="chat-box">Bạn có thể hỏi:
+- Có bao nhiêu kho?
+- Sản phẩm nào sắp hết?
+- Tổng nhập kho tháng này?
+- Có bao nhiêu kiểm kê đang chờ?</div>
+
+      <div class="prompt-row">
+        <input id="questionInput" type="text" placeholder="Ví dụ: Sản phẩm nào sắp hết?" />
+        <button id="askBtn">Gửi</button>
+      </div>
+    </div>
+
+    <script>
+      const askBtn = document.getElementById('askBtn');
+      const questionInput = document.getElementById('questionInput');
+      const chatBox = document.getElementById('chatBox');
+
+      async function askAssistant() {
+        const question = questionInput.value.trim();
+        if (!question) {
+          return;
+        }
+
+        chatBox.textContent = 'Đang xử lý...';
+
+        try {
+          const response = await fetch('http://localhost:5076/api/WarehouseAssistant/ask', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ question })
+          });
+
+          if (!response.ok) {
+            throw new Error('API request failed');
+          }
+
+          const data = await response.json();
+          chatBox.textContent = data.answer || 'Không có phản hồi.';
+        } catch (error) {
+          chatBox.textContent = 'Không thể kết nối backend AI. Hãy đảm bảo API đang chạy trên http://localhost:5076';
+          console.error(error);
+        }
+      }
+
+      askBtn.addEventListener('click', askAssistant);
+      questionInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          askAssistant();
+        }
+      });
+    </script>
+  </body>
+</html>
