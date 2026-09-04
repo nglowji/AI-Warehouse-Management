@@ -140,3 +140,4 @@ D:\NewPJ\WarehouseManagement.API\bin\Debug\net8.0\runtimes\win\lib\net6.0\System
 D:\NewPJ\WarehouseManagement.API\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\NewPJ\WarehouseManagement.API\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 D:\NewPJ\WarehouseManagement.API\bin\Debug\net8.0\BCrypt.Net-Next.dll
+D:\NewPJ\WarehouseManagement.API\obj\Debug\net8.0\WarehouseManagement.API.sourcelink.json
