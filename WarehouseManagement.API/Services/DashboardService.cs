@@ -18,35 +18,41 @@ public class DashboardService : IDashboardService
         var now = DateTime.UtcNow;
         var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        var totalProducts = await _dbContext.Products.CountAsync(p => !p.IsDeleted);
-        var totalWarehouses = await _dbContext.Warehouses.CountAsync(w => !w.IsDeleted);
-        var lowStockProducts = await _dbContext.Inventories
+        var lowStockQuery = _dbContext.Inventories
+            .AsNoTracking()
             .Include(i => i.Product)
-            .CountAsync(i => !i.IsDeleted && !i.Product!.IsDeleted && i.AvailableQuantity < i.Product.MinimumStock);
-        var pendingStocktakes = await _dbContext.Stocktakes
-            .CountAsync(s => !s.IsDeleted && s.Status != "CONFIRMED" && s.Status != "CLOSED");
+            .Where(i => !i.IsDeleted && i.Product != null && !i.Product.IsDeleted && i.AvailableQuantity < i.Product.MinimumStock);
 
-        var totalInventoryQuantity = await _dbContext.Inventories
+        var inventoryQuantities = await _dbContext.Inventories
+            .AsNoTracking()
             .Where(i => !i.IsDeleted)
-            .SumAsync(i => (decimal?)i.AvailableQuantity) ?? 0m;
+            .Select(i => i.Quantity - i.ReservedQuantity)
+            .ToListAsync();
 
-        var incomingThisMonth = await _dbContext.GoodsReceiptDetails
+        var incomingQuantities = await _dbContext.GoodsReceiptDetails
+            .AsNoTracking()
             .Include(d => d.GoodsReceipt)
-            .Where(d => !d.IsDeleted && !d.GoodsReceipt!.IsDeleted && d.GoodsReceipt.ConfirmedAt >= monthStart)
-            .SumAsync(d => (decimal?)d.Quantity) ?? 0m;
+            .Where(d => !d.IsDeleted && d.GoodsReceipt != null && !d.GoodsReceipt.IsDeleted && d.GoodsReceipt.Status == "CONFIRMED" && d.GoodsReceipt.ConfirmedAt >= monthStart)
+            .Select(d => d.Quantity)
+            .ToListAsync();
 
-        var outgoingThisMonth = await _dbContext.GoodsIssueDetails
+        var outgoingQuantities = await _dbContext.GoodsIssueDetails
+            .AsNoTracking()
             .Include(d => d.GoodsIssue)
-            .Where(d => !d.IsDeleted && !d.GoodsIssue!.IsDeleted && d.GoodsIssue.ConfirmedAt >= monthStart)
-            .SumAsync(d => (decimal?)d.Quantity) ?? 0m;
+            .Where(d => !d.IsDeleted && d.GoodsIssue != null && !d.GoodsIssue.IsDeleted && d.GoodsIssue.Status == "CONFIRMED" && d.GoodsIssue.ConfirmedAt >= monthStart)
+            .Select(d => d.Quantity)
+            .ToListAsync();
+
+        var incomingThisMonth = incomingQuantities.Sum();
+        var outgoingThisMonth = outgoingQuantities.Sum();
 
         return new DashboardSummaryDto
         {
-            TotalProducts = totalProducts,
-            TotalWarehouses = totalWarehouses,
-            LowStockProducts = lowStockProducts,
-            PendingStocktakes = pendingStocktakes,
-            TotalInventoryQuantity = totalInventoryQuantity,
+            TotalProducts = await _dbContext.Products.AsNoTracking().CountAsync(p => !p.IsDeleted),
+            TotalWarehouses = await _dbContext.Warehouses.AsNoTracking().CountAsync(w => !w.IsDeleted),
+            LowStockProducts = await lowStockQuery.CountAsync(),
+            PendingStocktakes = await _dbContext.Stocktakes.AsNoTracking().CountAsync(s => !s.IsDeleted && s.Status != "CONFIRMED" && s.Status != "CLOSED"),
+            TotalInventoryQuantity = inventoryQuantities.Sum(),
             IncomingThisMonth = incomingThisMonth,
             OutgoingThisMonth = outgoingThisMonth,
             NetMovementThisMonth = incomingThisMonth - outgoingThisMonth
@@ -56,12 +62,11 @@ public class DashboardService : IDashboardService
     public async Task<List<LowStockProductDto>> GetLowStockProductsAsync()
     {
         var items = await _dbContext.Inventories
+            .AsNoTracking()
             .Include(i => i.Product)
             .Include(i => i.Warehouse)
             .Include(i => i.Location)
-            .Where(i => !i.IsDeleted && !i.Product!.IsDeleted && i.AvailableQuantity < i.Product.MinimumStock)
-            .OrderBy(i => i.AvailableQuantity)
-            .Take(20)
+            .Where(i => !i.IsDeleted && i.Product != null && i.Warehouse != null && i.Location != null && !i.Product.IsDeleted && i.AvailableQuantity < i.Product.MinimumStock)
             .Select(i => new LowStockProductDto
             {
                 ProductId = i.ProductId,
@@ -71,12 +76,16 @@ public class DashboardService : IDashboardService
                 WarehouseName = i.Warehouse!.Name,
                 LocationId = i.LocationId,
                 LocationName = i.Location!.Name,
-                AvailableQuantity = i.AvailableQuantity,
+                AvailableQuantity = i.Quantity - i.ReservedQuantity,
                 MinimumStock = i.Product.MinimumStock,
-                Shortfall = i.Product.MinimumStock - i.AvailableQuantity
+                Shortfall = i.Product.MinimumStock - (i.Quantity - i.ReservedQuantity)
             })
             .ToListAsync();
 
-        return items;
+        return items
+            .OrderByDescending(i => i.Shortfall)
+            .ThenBy(i => i.ProductName)
+            .Take(20)
+            .ToList();
     }
 }

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bảng điều khiển kho hàng</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>AI Warehouse Management</title>
+    <link rel="stylesheet" href="styles.css?v=20260905-8" />
   </head>
   <body>
     <div class="app-shell">
@@ -12,116 +12,62 @@
         <div class="brand-wrap">
           <div class="brand-mark">W</div>
           <div>
-            <p class="eyebrow">HỆ THỐNG</p>
-            <h1>Kho vận hành</h1>
+            <p class="eyebrow">AI Warehouse</p>
+            <h1>Quản lý kho</h1>
           </div>
         </div>
 
-        <nav class="main-nav">
-          <button class="nav-item active">Tổng quan</button>
-          <button class="nav-item">Tồn kho</button>
-          <button class="nav-item">Nhập kho</button>
-          <button class="nav-item">Xuất kho</button>
-          <button class="nav-item">Kiểm kê</button>
-          <button class="nav-item">Nhật ký</button>
+        <nav class="main-nav" aria-label="Điều hướng chính">
+          <p class="nav-label">Workspace</p>
+          <button class="nav-item active" type="button" data-page="overview">Tổng quan</button>
+          <button class="nav-item" type="button" data-page="inventory">Tồn kho</button>
+          <button class="nav-item" type="button" data-page="receipts">Nhập kho</button>
+          <button class="nav-item" type="button" data-page="issues">Xuất kho</button>
+          <button class="nav-item" type="button" data-page="stocktakes">Kiểm kê</button>
+          <button class="nav-item" type="button" data-page="audit">Nhật ký</button>
+          <button class="nav-item" type="button" data-page="assistant">Trợ lý AI</button>
         </nav>
+        <div class="sidebar-note"><strong>Ca vận hành · 06:00—22:00</strong>Hệ thống đang theo dõi 2 kho và 6 nhóm sản phẩm.</div>
       </aside>
 
       <main class="content">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Hoạt động</p>
-            <h2>Hiệu suất kho</h2>
+            <p id="pageEyebrow" class="eyebrow">Vận hành hôm nay</p>
+            <h2 id="pageTitle">Tổng quan kho</h2>
           </div>
-          <button id="refreshBtn" class="primary-btn">Làm mới</button>
+          <div class="toolbar">
+            <span id="apiStatus" class="status-badge muted">Đang kết nối</span>
+            <button id="refreshBtn" class="primary-btn" type="button">Làm mới dữ liệu</button>
+          </div>
         </header>
 
-        <section class="stats-grid">
-          <article class="stat-card">
-            <p>Tổng sản phẩm</p>
-            <h3 id="totalProducts">0</h3>
-          </article>
-          <article class="stat-card">
-            <p>Tổng kho</p>
-            <h3 id="totalWarehouses">0</h3>
-          </article>
-          <article class="stat-card warning">
-            <p>Sản phẩm sắp hết</p>
-            <h3 id="lowStockProducts">0</h3>
-          </article>
-          <article class="stat-card accent">
-            <p>Kiểm kê chờ</p>
-            <h3 id="pendingStocktakes">0</h3>
-          </article>
-        </section>
-
-        <section class="summary-row">
-          <article class="panel">
-            <div class="panel-header">
-              <h3>Tình trạng tồn kho</h3>
+        <section id="pageContent" class="page-content">
+          <section class="stats-grid">
+            <article class="stat-card"><p>Tổng sản phẩm</p><h3>6</h3></article>
+            <article class="stat-card"><p>Tổng kho</p><h3>2</h3></article>
+            <article class="stat-card warning"><p>Sản phẩm sắp hết</p><h3>3</h3></article>
+            <article class="stat-card accent"><p>Kiểm kê chờ</p><h3>1</h3></article>
+          </section>
+          <section class="panel table-panel">
+            <div class="panel-header split">
+              <div><p class="eyebrow">Cảnh báo</p><h3>Danh sách sắp hết hàng</h3></div>
+              <span class="table-meta">Dữ liệu mẫu</span>
             </div>
-            <div class="metric-row">
-              <div>
-                <span>Tổng lượng khả dụng</span>
-                <strong id="totalInventoryQuantity">0</strong>
-              </div>
-              <div>
-                <span>Nhập trong tháng</span>
-                <strong id="incomingThisMonth">0</strong>
-              </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Sản phẩm</th><th>Kho</th><th>Vị trí</th><th>Khả dụng</th><th>Tối thiểu</th><th>Thiếu hụt</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Xi măng PCB40</strong><span>XM-PCB40-001</span></td><td>Kho vật liệu Bình Dương</td><td>Bãi A01</td><td>42</td><td>80</td><td><span class="status-badge danger">38</span></td></tr>
+                  <tr><td><strong>Thép xây dựng D16</strong><span>THEP-D16-016</span></td><td>Kho vật liệu Bình Dương</td><td>Kệ thép B02</td><td>18</td><td>50</td><td><span class="status-badge danger">32</span></td></tr>
+                </tbody>
+              </table>
             </div>
-            <div class="metric-row">
-              <div>
-                <span>Xuất trong tháng</span>
-                <strong id="outgoingThisMonth">0</strong>
-              </div>
-              <div>
-                <span>Di chuyển ròng</span>
-                <strong id="netMovementThisMonth">0</strong>
-              </div>
-            </div>
-          </article>
-
-          <article class="panel">
-            <div class="panel-header">
-              <h3>Thao tác nhanh</h3>
-            </div>
-            <ul class="action-list">
-              <li>Nhận hàng</li>
-              <li>Xuất kho</li>
-              <li>Thực hiện kiểm kê</li>
-              <li>Xem nhật ký hoạt động</li>
-            </ul>
-          </article>
-        </section>
-
-        <section class="panel table-panel">
-          <div class="panel-header">
-            <h3>Danh sách sắp hết hàng</h3>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Sản phẩm</th>
-                  <th>Kho</th>
-                  <th>Vị trí</th>
-                  <th>Khả dụng</th>
-                  <th>Tối thiểu</th>
-                  <th>Thiếu hụt</th>
-                </tr>
-              </thead>
-              <tbody id="lowStockTableBody"></tbody>
-            </table>
-          </div>
+          </section>
         </section>
       </main>
     </div>
 
-    <script src="app.js"></script>
-  </body>
-</html>
-
-    <script src="app.js"></script>
+    <script src="app.js?v=20260905-2" defer></script>
   </body>
 </html>
